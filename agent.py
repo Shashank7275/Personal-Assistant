@@ -35,8 +35,8 @@ from jarvis_ctrl_window import (
     open_quick_settings,
     open_system_info,
     close_application,
-    open_common_app,          # newly added
-    send_whatsapp_message,    # newly added
+    open_common_app,      
+    send_whatsapp_message,    
 )
 
 # Load environment variables (your API keys, etc.)
@@ -123,15 +123,12 @@ async def entrypoint(ctx: agents.JobContext):
 
 
 if __name__ == "__main__":
-    # Run the LiveKit worker CLI.
-    # Different livekit versions use different WorkerOptions kwargs:
-    #   - new versions: WorkerOptions(entrypoint=entrypoint)
-    #   - old versions: WorkerOptions(entrypoint_fnc=entrypoint)
-    # Try the new param first, fall back to the old one if needed.
+    
     try:
         opts = agents.WorkerOptions(entrypoint=entrypoint)
     except TypeError:
         opts = agents.WorkerOptions(entrypoint_fnc=entrypoint)
 
     agents.cli.run_app(opts)
+
 
