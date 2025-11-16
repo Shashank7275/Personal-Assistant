@@ -16,8 +16,8 @@ logging.basicConfig(
 load_dotenv()
 
 # ✅ Correct way to get keys (you can later replace with os.getenv)
-GOOGLE_SEARCH_API_KEY = "AIzaSyAvB1QZcSe0MVzpPTiK7R834pvlo6giTr8"
-SEARCH_ENGINE_ID = "27e6b6605e6924224"
+GOOGLE_SEARCH_API_KEY = .............
+SEARCH_ENGINE_ID = .........
 
 @function_tool
 async def search_internet(query: str) -> str:
@@ -68,4 +68,5 @@ async def get_formatted_datetime() -> str:
     """
     now = datetime.now()
     formatted = now.strftime("%A, %B %d, %Y - %I:%M %p")
+
     return formatted
