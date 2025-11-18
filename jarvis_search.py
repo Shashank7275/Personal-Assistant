@@ -70,3 +70,4 @@ async def get_formatted_datetime() -> str:
     formatted = now.strftime("%A, %B %d, %Y - %I:%M %p")
 
     return formatted
+
