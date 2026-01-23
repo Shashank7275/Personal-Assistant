@@ -1,134 +1,138 @@
-"""
-Fixed and cleaned LiveKit worker entrypoint for your Jarvis assistant.
-
-Assumptions:
-- The helper modules (jarvis_prompt, jarvis_search, jarvis_get_whether, jarvis_ctrl_window)
-  expose the named symbols imported below.
-- You have a working LiveKit `livekit` Python package and proper environment variables loaded
-  (e.g. LIVEKIT_API_KEY / LIVEKIT_API_SECRET or whatever your deployment requires).
-
-Notes:
-- This file focuses on clarity and a safe start/stop sequence for the AgentSession.
-- Compatible with latest LiveKit SDK versions (2025+).
-"""
-
+import sys
+import os
 import asyncio
+from datetime import datetime
 from dotenv import load_dotenv
-from livekit import agents
-from livekit.agents import AgentSession, Agent, RoomInputOptions
-from livekit.plugins import google, noise_cancellation
 
-# Import your Jarvis modules
-from jarvis_prompt import behavior_prompt, Reply_prompts
+from livekit import agents
+from livekit.agents import Agent, AgentSession, RoomInputOptions
+from livekit.plugins import google, noise_cancellation
+from livekit.plugins.google.realtime import types  # Import types for audio modalities
+
+# Import your prompt and tool modules (ensure correct filenames and locations)
+from jarvis_prompt import behavior_prompt, Reply_prompts, get_current_city
 from jarvis_search import search_internet, get_formatted_datetime
-from jarvis_get_whether import get_weather
+from jarvis_get_weather import get_weather
+
 from jarvis_ctrl_window import (
-    shutdown_system,
-    restart_system,
-    sleep_system,
-    create_folder,
-    run_application_or_media,
-    list_folder_items,
-    get_battery_info,
-    wifi_status,
-    bluetooth_status,
-    open_quick_settings,
-    open_system_info,
-    close_application,
-    open_common_app,      
-    send_whatsapp_message,    
+    shutdown_system, restart_system, sleep_system, lock_screen, create_folder,
+    run_application_or_media, list_folder_items, open_common_app, get_battery_info,
+    wifi_status, bluetooth_status, open_quick_settings, open_system_info,
+    close_application, open_pdf_in_folder, capture_photo, send_whatsapp_message,
 )
 
-# Load environment variables (your API keys, etc.)
+from keyboard_mouse_control import (
+    move_cursor_tool, mouse_click_tool, scroll_cursor_tool, type_text_tool,
+    press_key_tool, press_hotkey_tool, control_volume_tool, swipe_gesture_tool,
+)
+
 load_dotenv()
 
-
+# ==============================================================================
+# ASSISTANT CLASS
+# ==============================================================================
 class Assistant(Agent):
-    """Agent wrapper that provides behavior prompt and tools to the LiveKit agent runtime."""
-
-    def __init__(self) -> None:
+    def __init__(self, current_date: str, current_city: str):
         super().__init__(
-            instructions=behavior_prompt,
+            instructions=behavior_prompt.format(
+                current_date=current_date,
+                current_city=current_city
+            ),
             tools=[
-                # Information tools
+                # General Tools
                 search_internet,
                 get_formatted_datetime,
                 get_weather,
 
-                # System control tools
+                # System Tools
                 shutdown_system,
                 restart_system,
                 sleep_system,
+                lock_screen,
                 create_folder,
                 run_application_or_media,
                 list_folder_items,
+                open_common_app,
                 get_battery_info,
                 wifi_status,
                 bluetooth_status,
                 open_quick_settings,
                 open_system_info,
                 close_application,
-                open_common_app,
-                send_whatsapp_message,
+                open_pdf_in_folder,
+                capture_photo,
+
+              
+
+                # Cursor & Keyboard Inputs
+                move_cursor_tool,
+                mouse_click_tool,
+                scroll_cursor_tool,
+                type_text_tool,
+                press_key_tool,
+                press_hotkey_tool,
+                control_volume_tool,
+                swipe_gesture_tool,
             ],
         )
 
-
+# ==============================================================================
+# ENTRYPOINT Function
+# ==============================================================================
 async def entrypoint(ctx: agents.JobContext):
-    """Entrypoint for the LiveKit worker.
-
-    The runtime will call this coroutine and provide a JobContext.
-    We create an AgentSession configured with a realtime LLM, start it,
-    and optionally emit an initial reply. We handle exceptions and ensure
-    the session is stopped cleanly.
-    """
-
     session = None
     try:
-        # Create an LLM model instance (RealtimeModel from the google plugin)
-        llm = google.beta.realtime.RealtimeModel(
-            voice="charon",  # change to 'verse' or 'puck' if you prefer
-        )
-        session = AgentSession(llm=llm)
+        current_date = await get_formatted_datetime()
+        current_city = await get_current_city()
 
-        # Start the agent session and attach to the room provided by the JobContext
+        llm = google.realtime.RealtimeModel(voice="charon")
+
+        session = AgentSession(
+            llm=llm,
+            allow_interruptions=True,
+        )
+
         await session.start(
             room=ctx.room,
-            agent=Assistant(),
+            agent=Assistant(current_date=current_date, current_city=current_city),
             room_input_options=RoomInputOptions(
                 noise_cancellation=noise_cancellation.BVC(),
+                audio_output=types.Modality.AUDIO,  # Enable voice output!
             ),
         )
 
-        # Optionally send an initial greeting or reply using your Reply_prompts
+        # Greeting
+        hour = datetime.now().hour
         if Reply_prompts:
-            await session.generate_reply(instructions=Reply_prompts)
+            greeting = (
+                "Good morning!" if 5 <= hour < 12 else
+                "Good afternoon!" if 12 <= hour < 18 else
+                "Good evening!"
+            )
+            intro = f"{greeting}\n{Reply_prompts}"
+            await session.generate_reply(instructions=intro)  # Will be spoken!
 
-        # Keep the session alive until the job context is cancelled/ends
-        await ctx.wait_for_shutdown()
+        # Wait for interruption (as per LiveKit agent design)
+        await agents.wait_for_interrupt()
 
     except asyncio.CancelledError:
-        raise  # Graceful shutdown
+        raise
     except Exception as exc:
-        print("[agent.entrypoint] Exception:", type(exc).__name__, exc)
+        print("[agent.entrypoint] Exception:", exc)
     finally:
-        if session is not None:
+        if session:
             try:
-                if hasattr(session, "stop"):
-                    await session.stop()
-                elif hasattr(session, "end"):
-                    await session.end()
-            except Exception as stop_exc:
-                print("[agent.entrypoint] Error stopping session:", stop_exc)
+                await session.stop()
+            except Exception:
+                pass
 
-
+# ==============================================================================
+# MAIN RUNNER
+# ==============================================================================
 if __name__ == "__main__":
-    
     try:
         opts = agents.WorkerOptions(entrypoint=entrypoint)
     except TypeError:
+        # Fallback for older versions
         opts = agents.WorkerOptions(entrypoint_fnc=entrypoint)
-
     agents.cli.run_app(opts)
-
-
