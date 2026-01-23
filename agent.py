@@ -136,3 +136,4 @@ if __name__ == "__main__":
         # Fallback for older versions
         opts = agents.WorkerOptions(entrypoint_fnc=entrypoint)
     agents.cli.run_app(opts)
+
