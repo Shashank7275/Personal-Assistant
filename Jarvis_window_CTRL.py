@@ -232,3 +232,4 @@ async def folder_file(command: str) -> str:
         return f"✅ File opened: {item['name']}"
 
     return "⚠ कुछ भी match नहीं हुआ।"
+
