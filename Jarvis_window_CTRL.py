@@ -48,15 +48,16 @@ APP_MAPPINGS = {
     "cmd": "cmd",
     "command prompt": "cmd",
     "paint": "mspaint",
+    'camera": "camera",
 
         # URLs
     "youtube": "https://www.youtube.com",
-    "whatsapp": "whatsapp://", # Changed to desktop app URI
+    "whatsapp": "whatsapp://",
 
     # Hindi
     "युटुब": "https://www.youtube.com",
     "यूट्यूब": "https://www.youtube.com",
-    "व्हाट्सएप": "whatsapp://", # Changed to desktop app URI
+    "व्हाट्सएप": "whatsapp://",
     "क्रोम": "chrome",
     "गूगल क्रोम": "chrome",
     "कैलकुलेटर": "calc",
@@ -207,4 +208,5 @@ async def close(window_name: str) -> str:
 @function_tool
 async def folder_file(path: str) -> str:
     return "❌ folder_file tool not implemented"
+
 
