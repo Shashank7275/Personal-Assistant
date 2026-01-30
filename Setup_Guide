@@ -1,0 +1,451 @@
+
+# 🤖 JARVIS Personal Assistant – Setup Guid 
+
+---
+
+## Overview
+
+This guide explains how to set up and run your JARVIS Personal Assistant using Python.
+Your project already contains the code — this document only covers environment setup, dependency installation, and how to launch agent.py from the console.
+
+---
+
+## Prerequisites
+
+Before starting, make sure:
+
+* Python 3.10 or higher is installed
+* Python is added to PATH
+* Your project folder contains:
+
+* agent.py
+* requirements.txt
+
+To verify Python:
+
+##python --version
+
+## Step 1 — Create Virtual Environment (.venv)
+
+### Windows
+
+python -m venv .venv
+
+
+### Linux / Mac
+
+
+python3 -m venv .venv
+
+
+This creates a .venv directory.
+
+---
+
+## Step 2 — Activate Virtual Environment
+
+### Windows
+
+
+.venv\Scripts\activate
+
+
+### Linux / Mac
+
+
+source .venv/bin/activate
+
+
+After activation, you should see:
+
+
+(.venv)
+
+
+This confirms the environment is active.
+
+---
+
+## Step 3 — Install Dependencies
+
+Install all required packages:
+
+
+pip install -r requirements.txt
+
+
+If pip needs upgrade:
+
+
+pip install --upgrade pip
+
+
+Then run again:
+
+
+pip install -r requirements.txt
+
+
+Wait until installation finishes.
+
+---
+
+## Step 4 — Environment Variables (.env)
+
+If your JARVIS uses API keys (OpenAI, Google, Weather, LiveKit, etc):
+
+Create a .env file in the root folder and add your keys there.
+
+Make sure .env is saved before running JARVIS.
+
+---
+
+## Step 5 — Run JARVIS
+
+Start the assistant:
+
+
+python agent.py
+
+
+You should see console output similar to:
+
+
+JARVIS Activated
+
+
+JARVIS is now running.
+
+---
+
+## Daily Usage
+
+Each time you restart your system:
+
+1. Open terminal in project folder
+2. Activate environment
+
+Windows:
+
+
+.venv\Scripts\activate
+
+
+Linux / Mac:
+
+
+source .venv/bin/activate
+
+
+3. Run JARVIS:
+
+
+python agent.py
+
+
+---
+
+## Stop JARVIS
+
+Press:
+
+
+CTRL + C
+
+
+---
+
+## Common Issues
+
+### Module not found
+
+Reinstall dependencies:
+
+pip install -r requirements.txt
+
+---
+
+### Python not recognized
+
+Reinstall Python and enable “Add to PATH”.
+
+---
+
+### Permission errors (Windows)
+
+Run Command Prompt as Administrator.
+
+---
+
+## Notes
+
+* Always activate .venv before running
+* Keep agent.py in root folder
+* Do not delete .venv
+* Update requirements.txt when adding new libraries
+
+## Run assistant
+
+* Python agent.py console
+
+---
+
+## Future Enhancements (Optional)
+
+Later you can extend JARVIS with:
+
+* Auto-start on boot
+* EXE build
+* GUI launcher
+* Background service
+* Voice wake word
+* Vision / camera
+* Internet search
+
+
+
+𝗔𝗴𝗲𝗻𝘁.𝗽𝘆 𝗶𝘀 𝗻𝗼𝘁 𝘄𝗼𝗿𝗸𝗶𝗻𝗴, 𝘆𝗼𝘂 𝘀𝗵𝗼𝘂𝗹𝗱 𝘀𝗲𝘁 𝘂𝗽 𝗕𝗿𝗮𝗶𝗻.𝗽𝘆 𝗹𝗶𝗸𝗲 𝗔𝗴𝗲𝗻𝘁.𝗽𝘆 𝘆𝗼𝘂 𝗮𝗹𝘀𝗼 𝗵𝗮𝘃𝗲 𝘁𝗼 𝗶𝗺𝗽𝗼𝗿𝘁 𝗮𝗹𝗹 𝗳𝗶𝗹𝗲 𝗮𝗻𝗱 𝘁𝗼𝗼𝗹 𝗶𝗻 𝗶𝘁
+
+
+
+
+### ✅ Setup Complete — JARVIS Ready 🤖
+
+# 🤖 JARVIS Personal Assistant – Setup Guid brain.py
+
+
+# 🎙️ LiveKit Voice Setup (JARVIS)
+
+This section explains how to install LiveKit, connect your API inside brain.py, and resolve common *live noise cancellation errors*.
+
+---
+
+## ✅ Prerequisites
+
+Make sure:
+
+* Your .venv is activated
+* agent.py already runs
+* You have LiveKit credentials:
+
+From LiveKit Dashboard:
+
+* LIVEKIT_URL
+* LIVEKIT_API_KEY
+* LIVEKIT_API_SECRET
+
+---
+
+## 📦 Step 1 — Install LiveKit Packages
+
+With .venv active, run:
+
+
+pip install livekit
+pip install livekit-agents
+pip install livekit-plugins-google
+pip install livekit-plugins-noise-cancellation
+pip install python-dotenv
+
+
+Recommended extra audio deps:
+
+
+pip install sounddevice pyaudio numpy
+
+
+If pyaudio fails on Windows:
+
+
+pip install pipwin
+pipwin install pyaudio
+
+
+Then verify:
+
+
+pip list | findstr livekit
+
+
+You should see:
+
+* livekit
+* livekit-agents
+* livekit-plugins-google
+* livekit-plugins-noise-cancellation
+
+---
+
+## 🔐 Step 2 — Add LiveKit API Keys
+
+Create or open .env in project root:
+
+Put your credentials there:
+
+* LIVEKIT_URL
+* LIVEKIT_API_KEY
+* LIVEKIT_API_SECRET
+
+Save file.
+
+Your brain.py should load these using dotenv and initialize LiveKit from there.
+
+(Important: never hardcode keys directly in GitHub.)
+
+---
+
+## 🧠 Step 3 — brain.py (Voice Brain)
+
+Inside brain.py:
+
+* Load .env
+* Initialize LiveKit client
+* Create voice agent
+* Import all your tools (file, window, keyboard, memory)
+* Attach noise cancellation plugin
+
+Conceptually:
+
+brain.py =
+
+Voice Input → LiveKit → Noise Cancellation → JARVIS Tools → Response
+
+Make sure:
+
+✔ brain.py imports your skill files
+✔ No circular imports
+
+If error appears, first confirm all plugins are installed (Step 1).
+
+---
+
+## 🔊 Step 4 — Live Noise Cancellation Error (Common Fix)
+
+If you see errors like:
+
+* noise_cancellation not found
+* module not installed
+* audio stream failed
+
+Do this:
+
+### 1. Reinstall plugin
+
+
+pip uninstall livekit-plugins-noise-cancellation -y
+pip install livekit-plugins-noise-cancellation
+
+
+---
+
+### 2. Install audio backend
+
+
+pip install sounddevice pyaudio
+
+
+Windows users (if pyaudio fails):
+
+
+pip install pipwin
+pipwin install pyaudio
+
+
+---
+
+### 3. Restart terminal
+
+Close terminal completely.
+
+Reopen:
+
+Activate env:
+
+
+.venv\Scripts\activate
+
+
+Run again:
+
+
+python brain.py console
+
+
+---
+
+## 🔁 Step 5 — Import All Tools into brain.py
+
+If JARVIS tools are not working with voice:
+
+Make sure brain.py imports:
+
+* file tools
+* window control
+* keyboard/mouse
+* memory system
+
+Then agent.py should only start brain.
+
+Architecture:
+
+agent.py → brain.py → tools
+
+This avoids confusion.
+
+---
+
+## ▶️ Final Run
+
+Always run from root:
+
+
+python brain.py console
+
+
+If voice works:
+
+You’ll see mic activation + LiveKit connection.
+
+---
+
+## 🛑 If Still Error
+
+Check one by one:
+
+
+pip show livekit
+pip show livekit-agents
+pip show livekit-plugins-noise-cancellation
+
+
+If missing → reinstall.
+
+Also confirm:
+
+* Microphone permissions allowed
+* No other app using mic
+* .env loaded correctly
+
+---
+
+## ✅ Summary
+
+1 Activate .venv
+2 Install LiveKit + plugins
+3 Add API keys to .env
+4 Load keys in brain.py
+5 Import all tools in brain.py
+6 Run python agent.py
+
+That’s it.
+
+---
+
+If you want next upgrade, Auxin:
+
+👉 Wake word (“Hey Jarvis”)
+👉 Always-listening mode
+👉 GUI mic indicator
+👉 Background service
+
+
