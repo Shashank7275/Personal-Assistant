@@ -18,7 +18,7 @@ from jarvis_ctrl_window import (
     shutdown_system, restart_system, sleep_system, lock_screen, create_folder,
     run_application_or_media, list_folder_items, open_common_app, get_battery_info,
     wifi_status, bluetooth_status, open_quick_settings, open_system_info,
-    close_application, open_pdf_in_folder, capture_photo, send_whatsapp_message,
+    close_application,
 )
 
 from keyboard_mouse_control import (
