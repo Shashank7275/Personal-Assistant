@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from livekit import agents
 from livekit.agents import Agent, AgentSession, RoomInputOptions, ChatContext, ChatMessage
 from livekit.plugins import google, noise_cancellation
-from livekit.plugins.google.realtime import types  # Import types for audio modalities
+from livekit.plugins.google.realtime import types 
 
 # Import your prompt and tool modules (same as agent.py)
 from jarvis_prompt import behavior_prompt, Reply_prompts, get_current_city
@@ -81,10 +81,8 @@ class Assistant(Agent):
                 bluetooth_status,
                 open_quick_settings,
                 open_system_info,
-                close_application,
-                open_pdf_in_folder,
-                capture_photo,
-                send_whatsapp_message,
+               
+               
 
                 # Cursor & Keyboard Inputs
                 move_cursor_tool,
