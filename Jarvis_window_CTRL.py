@@ -1,26 +1,3 @@
-"""
-Async Windows control tools for Jarvis Assistant.
-Uses @function_tool from LiveKit Agents.
-
-Added features in this version:
- - Camera access: capture_photo() saves a JPG to Pictures/JarvisPhotos
- - Lock screen: lock_screen()
- - Cancel pending shutdown: cancel_shutdown()
- - Improved sleep implementation (tries native API then fallback)
- - Robust open_file/open_pdf_in_folder to open folders or PDF files
- - Improved run_application_or_media fallback behavior and better async handling
- - Small utility functions and clearer error handling
-
-Dependencies (optional):
- - psutil (battery)
- - opencv-python (cv2) for camera capture
-
-Usage:
- - Keep this file in your Jarvis tools and import LiveKit function_tool as before.
- - Install optional dependencies with pip if you want camera/battery features:
-    pip install psutil opencv-python
-
-"""
 
 import os
 import sys
@@ -411,4 +388,5 @@ async def send_whatsapp_message(phone_number: str, message: str) -> Dict[str, An
         return {"ok": False, "error": str(e)}
 
 # End of file
+
 
