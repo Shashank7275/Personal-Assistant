@@ -9,7 +9,7 @@ async def get_current_city():
         return data.get("city", "Unknown")
     except Exception as e:
         print(f"Error getting current city: {e}")
-        return "Unknown"
+        return "Unknown
 
 from google.genai.types import Behavior
 
@@ -125,6 +125,7 @@ Overall style:
 - Human-like flow
 
 """
+
 
 
 
