@@ -1,5 +1,5 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.agents import create_react_agent, AgentExecutoe
+from langchain.agents import create_react_agent, AgentExecutoer
 from dotenv import load_dotenv
 from Jarvis_google_search import google_search, get_current_datetime
 from jarvis_get_whether import get_weather
