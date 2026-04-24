@@ -2,7 +2,7 @@ import os
 import subprocess
 import sys
 import logging
-from fuzzywuzzy import proces
+from fuzzywuzzy import process
 
 import asyncio
 try:
