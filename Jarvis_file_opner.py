@@ -1,6 +1,6 @@
 import os
 import subprocess
-import sy
+import sys
 import logging
 from fuzzywuzzy import process
 
