@@ -1,5 +1,5 @@
 # jarvis_search.py
-import ossss
+import osss
 import requests
 import asyncio
 import logging
